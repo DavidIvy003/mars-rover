@@ -45,6 +45,10 @@ class Rover
     raise OutOfBounds if @x_position > x_boundary or @y_position > y_boundary
     raise OutOfBounds if @x_position < 0 or @y_position < 0
   end
+
+  def move movement
+
+  end
 end
 
 if __FILE__ == $0
