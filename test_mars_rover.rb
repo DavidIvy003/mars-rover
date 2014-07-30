@@ -1,0 +1,37 @@
+require 'simplecov'
+require 'turn/autorun'
+require 'colorize'
+
+SimpleCov.start do
+  add_filter 'vendor'
+end
+
+require './simulator'
+
+describe Simulator do
+  it "fails if no input file is given" do
+    proc { Simulator.new() }.must_raise InvalidInput
+  end
+
+  it "fails if the number of input lines is not odd or <= 3" do
+    proc { Simulator.new('invalid_input.txt') }.must_raise InvalidInput
+  end
+
+  it "creates one or more rovers" do
+    sim = Simulator.new('examples/5_by_5_two_rovers.txt')
+    sim.rovers.count.must_equal 2
+  end
+
+  it "respects the plateau's upper boundaries" do
+    proc { Simulator.new('examples/3_by_3_too_small.txt') }.must_raise OutOfBounds
+  end
+end
+
+describe Rover do
+  it "knows its own starting position" do
+    rover = Rover.new(1, 5, 'E')
+    rover.x_position.must_equal 1
+    rover.y_position.must_equal 5
+    rover.orientation.must_equal 'E'
+  end
+end
