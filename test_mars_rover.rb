@@ -25,6 +25,10 @@ describe Simulator do
   it "respects the plateau's upper boundaries" do
     proc { Simulator.new('examples/3_by_3_too_small.txt') }.must_raise OutOfBounds
   end
+
+  it "respects the plateau's lower boundaries" do
+    proc { Simulator.new('examples/3_by_3_invalid_start_lower_bounds.txt') }.must_raise OutOfBounds
+  end
 end
 
 describe Rover do
