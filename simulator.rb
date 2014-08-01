@@ -39,6 +39,10 @@ class Rover
     @x_position = x_position.to_i
     @y_position = y_position.to_i
     @orientation = orientation
+    @compass = { "N" => {"L" => "W", "R" => "E"},
+                 "E" => {"L" => "N", "R" => "S"},
+                 "W" => {"L" => "S", "R" => "N"},
+                 "S" => {"L" => "E", "R" => "W"} }
   end
 
   def enforce_boundary x_boundary, y_boundary
@@ -47,7 +51,12 @@ class Rover
   end
 
   def move movement
-
+    case movement
+    when "M"
+      raise "Not Implemented Yet"
+    else
+      @orientation = @compass[orientation][movement]
+    end
   end
 end
 
