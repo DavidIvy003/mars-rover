@@ -50,4 +50,18 @@ describe Rover do
     rover.move('L')
     rover.orientation.must_equal 'N'
   end
+
+  it "it traverses the plateau" do
+    rover = Rover.new(1,1, 'E')
+    rover.move('M')
+    rover.orientation.must_equal 'E'
+    rover.x_position.must_equal 2
+    rover.y_position.must_equal 1
+    rover.move('L')
+    rover.orientation.must_equal 'N'
+    rover.move('M')
+    rover.orientation.must_equal 'N'
+    rover.x_position.must_equal 2
+    rover.y_position.must_equal 2
+  end
 end
