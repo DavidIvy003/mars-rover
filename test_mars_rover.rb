@@ -38,4 +38,16 @@ describe Rover do
     rover.y_position.must_equal 5
     rover.orientation.must_equal 'E'
   end
+
+  it "is able to turn left 360 degrees" do
+    rover = Rover.new(5, 6, 'N')
+    rover.move('L')
+    rover.orientation.must_equal 'E'
+    rover.move('L')
+    rover.orientation.must_equal 'S'
+    rover.move('L')
+    rover.orientation.must_equal 'W'
+    rover.move('L')
+    rover.orientation.must_equal 'N'
+  end
 end

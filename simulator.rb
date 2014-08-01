@@ -16,7 +16,7 @@ class Simulator
     file = File.read file_name
     lines = file.split("\n")
     raise InvalidInput if lines.length % 2 == 0 or lines.length == 1
-    (@x_max, @y_max) = lines[0].split(' ')
+    (@x_max, @y_max) = lines[0].split(' ').map(&:to_i)
     create_rovers lines.select.each_with_index { |str, i| i.odd? }
     rovers.map{ |rover| rover.enforce_boundary(x_max, y_max) }
   end
@@ -36,13 +36,18 @@ class Rover
   attr_accessor :x_position, :y_position, :orientation
 
   def initialize x_position, y_position, orientation
-    @x_position = x_position
-    @y_position = y_position
+    @x_position = x_position.to_i
+    @y_position = y_position.to_i
     @orientation = orientation
   end
 
-  def enforce_boundary(x_boundary, y_boundary)
+  def enforce_boundary x_boundary, y_boundary
     raise OutOfBounds if @x_position > x_boundary or @y_position > y_boundary
+    raise OutOfBounds if @x_position < 0 or @y_position < 0
+  end
+
+  def move movement
+
   end
 end
 
