@@ -29,6 +29,11 @@ describe Simulator do
   it "respects the plateau's lower boundaries" do
     proc { Simulator.new('examples/3_by_3_invalid_start_lower_bounds.txt') }.must_raise OutOfBounds
   end
+
+  it "throws error if rovers colide" do
+    sim = Simulator.new('examples/5_by_5_1_1_E.txt')
+    proc { sim.deploy_rovers! }.must_raise RoverCollision
+  end
 end
 
 describe Rover do
