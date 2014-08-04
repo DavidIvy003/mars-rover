@@ -29,6 +29,11 @@ describe Simulator do
   it "respects the plateau's lower boundaries" do
     proc { Simulator.new('examples/3_by_3_invalid_start_lower_bounds.txt') }.must_raise OutOfBounds
   end
+
+  it "throws error if rovers colide" do
+    sim = Simulator.new('examples/5_by_5_1_1_E.txt')
+    proc { sim.deploy_rovers! }.must_raise RoverCollision
+  end
 end
 
 describe Rover do
@@ -42,12 +47,26 @@ describe Rover do
   it "is able to turn left 360 degrees" do
     rover = Rover.new(5, 6, 'N')
     rover.move('L')
-    rover.orientation.must_equal 'E'
+    rover.orientation.must_equal 'W'
     rover.move('L')
     rover.orientation.must_equal 'S'
     rover.move('L')
-    rover.orientation.must_equal 'W'
+    rover.orientation.must_equal 'E'
     rover.move('L')
     rover.orientation.must_equal 'N'
+  end
+
+  it "it traverses the plateau" do
+    rover = Rover.new(1,1, 'E')
+    rover.move('M')
+    rover.orientation.must_equal 'E'
+    rover.x_position.must_equal 2
+    rover.y_position.must_equal 1
+    rover.move('L')
+    rover.orientation.must_equal 'N'
+    rover.move('M')
+    rover.orientation.must_equal 'N'
+    rover.x_position.must_equal 2
+    rover.y_position.must_equal 2
   end
 end
