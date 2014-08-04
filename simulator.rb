@@ -8,6 +8,9 @@ end
 class OutOfBounds < Exception
 end
 
+class RoverCollision < Exception
+end
+
 class Simulator
   attr_accessor :rovers, :x_max, :y_max
 
@@ -17,28 +20,47 @@ class Simulator
     lines = file.split("\n")
     raise InvalidInput if lines.length % 2 == 0 or lines.length == 1
     (@x_max, @y_max) = lines[0].split(' ').map(&:to_i)
-    create_rovers lines.select.each_with_index { |str, i| i.odd? }
+
+    positions = lines.select.each_with_index { |str, i| i.odd? }
+    instructions = lines.select.each_with_index { |str, i| i.even? }.drop(1)
+
+    create_rovers positions.zip( instructions )
     rovers.map{ |rover| rover.enforce_boundary(x_max, y_max) }
+  end
+
+  def deploy_rovers!
+    rovers.each do |rover|
+      rover.instructions.each do |instruction|
+        rover.move instruction
+        collision = rovers.detect { |r|
+                                     r != rover &&
+                                     r.x_position == rover.x_position &&
+                                     r.y_position == rover.y_position }
+        fail RoverCollision, "#{rover.inspect} collided with #{collision.inspect}" if collision
+      end
+    end
   end
 
   private
 
-    def create_rovers lines
+    def create_rovers nasa_data
       @rovers = []
-      lines.each do |line|
-        rovers << Rover.new(*line.split(' '))
+      nasa_data.each do |data|
+        (position, instructions) = data
+        rovers << Rover.new(*position.split(' '), instructions)
       end
     end
 
 end
 
 class Rover
-  attr_accessor :x_position, :y_position, :orientation
+  attr_accessor :x_position, :y_position, :orientation, :instructions
 
-  def initialize x_position, y_position, orientation
-    @x_position = x_position.to_i
-    @y_position = y_position.to_i
-    @orientation = orientation
+  def initialize x_position, y_position, orientation, instructions
+    @x_position   = x_position.to_i
+    @y_position   = y_position.to_i
+    @orientation  = orientation
+    @instructions = instructions.split(//)
     @compass = { "N" => {"L" => "W", "R" => "E", "X" => 0, "Y" => 1},
                  "E" => {"L" => "N", "R" => "S", "X" => 1, "Y" => 0},
                  "W" => {"L" => "S", "R" => "N", "X" => -1, "Y" => 1},
