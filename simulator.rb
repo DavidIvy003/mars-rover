@@ -15,16 +15,9 @@ class Simulator
   attr_accessor :rovers, :x_max, :y_max
 
   def initialize file_name=""
-    raise InvalidInput unless File.exist? file_name
-    file = File.read file_name
-    lines = file.split("\n")
-    raise InvalidInput if lines.length % 2 == 0 or lines.length == 1
-    (@x_max, @y_max) = lines[0].split(' ').map(&:to_i)
-
-    positions = lines.select.each_with_index { |str, i| i.odd? }
-    instructions = lines.select.each_with_index { |str, i| i.even? }.drop(1)
-
-    create_rovers positions.zip( instructions )
+    input_lines = validate_input_file! file_name
+    set_max_plateau_dimensions input_lines
+    create_rovers parse_nasa_data(input_lines)
     rovers.map{ |rover| rover.enforce_boundary(x_max, y_max) }
   end
 
@@ -32,25 +25,47 @@ class Simulator
     rovers.each do |rover|
       rover.instructions.each do |instruction|
         rover.move instruction
-        collision = rovers.detect { |r|
-                                     r != rover &&
-                                     r.x_position == rover.x_position &&
-                                     r.y_position == rover.y_position }
-        fail RoverCollision, "#{rover.inspect} collided with #{collision.inspect}" if collision
+        detect_collision! rover
       end
     end
   end
 
   private
 
-    def create_rovers nasa_data
-      @rovers = []
-      nasa_data.each do |data|
-        (position, instructions) = data
-        rovers << Rover.new(*position.split(' '), instructions)
+    def detect_collision! rover
+      collision = rovers.detect { |r|
+                                   r != rover &&
+                                   r.x_position == rover.x_position &&
+                                   r.y_position == rover.y_position }
+      fail RoverCollision, "#{rover.inspect} collided with #{collision.inspect}" if collision
+    end
+
+    def set_max_plateau_dimensions lines
+      (@x_max, @y_max) = lines[0].split(' ').map(&:to_i)
+    end
+
+    def parse_nasa_data input_lines
+      [].tap do |data_array|
+        input_lines.drop(1).each_slice(2) do |rover_data|
+          data_array << [:position, :instructions].zip(rover_data).to_h
+        end
       end
     end
 
+    def validate_input_file! file_name
+      raise InvalidInput unless File.exist? file_name
+      file = File.read file_name
+      lines = file.split("\n")
+      raise InvalidInput if lines.length % 2 == 0 or lines.length == 1
+      lines
+    end
+
+    def create_rovers nasa_data
+      @rovers = []
+      nasa_data.each do |data|
+        rovers << Rover.new(*data[:position].split(' '), data[:instructions])
+      end
+    end
 end
 
 class Rover
