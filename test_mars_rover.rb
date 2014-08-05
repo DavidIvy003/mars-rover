@@ -31,21 +31,26 @@ describe Simulator do
   end
 
   it "throws error if rovers colide" do
-    sim = Simulator.new('examples/5_by_5_1_1_E.txt')
+    sim = Simulator.new('examples/6_by_6_rover_collision.txt')
     proc { sim.deploy_rovers! }.must_raise RoverCollision
+  end
+
+  it "displays output after deploying rovers" do
+    output = Simulator.new('examples/5_by_5_two_rovers.txt').deploy_rovers!
+    output.must_equal "3 1 E\n1 1 W\n"
   end
 end
 
 describe Rover do
   it "knows its own starting position" do
-    rover = Rover.new(1, 5, 'E')
+    rover = Rover.new(1, 5, 'E', "")
     rover.x_position.must_equal 1
     rover.y_position.must_equal 5
     rover.orientation.must_equal 'E'
   end
 
   it "is able to turn left 360 degrees" do
-    rover = Rover.new(5, 6, 'N')
+    rover = Rover.new(5, 6, 'N', "")
     rover.move('L')
     rover.orientation.must_equal 'W'
     rover.move('L')
@@ -57,7 +62,7 @@ describe Rover do
   end
 
   it "it traverses the plateau" do
-    rover = Rover.new(1,1, 'E')
+    rover = Rover.new(1,1, 'E', "")
     rover.move('M')
     rover.orientation.must_equal 'E'
     rover.x_position.must_equal 2
