@@ -47,7 +47,7 @@ class Simulator
     def parse_nasa_data input_lines
       [].tap do |data_array|
         input_lines.drop(1).each_slice(2) do |rover_data|
-          data_array << [:position, :instructions].zip(rover_data).to_h
+          data_array << Hash[ [:position, :instructions].zip(rover_data) ]
         end
       end
     end
