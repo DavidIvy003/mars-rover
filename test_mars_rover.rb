@@ -34,6 +34,11 @@ describe Simulator do
     sim = Simulator.new('examples/6_by_6_rover_collision.txt')
     proc { sim.deploy_rovers! }.must_raise RoverCollision
   end
+
+  it "displays output after deploying rovers" do
+    output = Simulator.new('examples/5_by_5_two_rovers.txt').deploy_rovers!
+    output.must_equal "3 1 E\n1 1 W\n"
+  end
 end
 
 describe Rover do
