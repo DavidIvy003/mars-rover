@@ -2,15 +2,6 @@
 
 require 'colorize'
 
-class InvalidInput < Exception
-end
-
-class OutOfBounds < Exception
-end
-
-class RoverCollision < Exception
-end
-
 class Simulator
   attr_accessor :rovers, :x_max, :y_max
 
@@ -107,7 +98,16 @@ class Rover
   end
 end
 
+class InvalidInput < Exception
+end
+
+class OutOfBounds < Exception
+end
+
+class RoverCollision < Exception
+end
+
 if __FILE__ == $0
   # this will only run if the script was the main, not load'd or require'd
-  puts Simulator.new(ARGV[0])
+  puts Simulator.new(ARGV[0]).deploy_rovers!
 end
