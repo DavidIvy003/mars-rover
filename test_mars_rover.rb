@@ -37,7 +37,7 @@ describe Simulator do
 
   it "displays output after deploying rovers" do
     output = Simulator.new('examples/5_by_5_two_rovers.txt').deploy_rovers!
-    output.must_equal "3 1 E\n1 1 W\n"
+    output.must_equal "3 1 E\n1 2 W\n"
   end
 end
 

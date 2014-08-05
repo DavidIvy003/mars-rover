@@ -28,6 +28,7 @@ class Simulator
         detect_collision! rover
       end
     end
+    rover_positions_string
   end
 
   private
@@ -65,6 +66,14 @@ class Simulator
       nasa_data.each do |data|
         rovers << Rover.new(*data[:position].split(' '), data[:instructions])
       end
+    end
+
+    def rover_positions_string
+      output = ""
+      rovers.each do |rover|
+        output << "#{rover.x_position} #{rover.y_position} #{rover.orientation}\n"
+      end
+      output
     end
 end
 
